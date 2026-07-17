@@ -1,0 +1,82 @@
+"use client";
+
+import React, { useState } from "react";
+import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
+import { Menu, X } from "lucide-react";
+import { Button } from "../primitives/kit";
+import { CommandPalette } from "../primitives/command-palette";
+import { SECTIONS } from "../sections-config";
+import { cn } from "@/lib/utils";
+
+export function Header() {
+  const [solid, setSolid] = useState(false);
+  const [open, setOpen] = useState(false);
+  const { scrollY } = useScroll();
+  useMotionValueEvent(scrollY, "change", (latest) => setSolid(latest > 16));
+
+  return (
+    <header
+      className={cn(
+        "fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300",
+        solid ? "border-white/[.06] bg-[#05070c]/80 backdrop-blur-xl" : "border-transparent bg-transparent",
+      )}
+    >
+      <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-5 sm:px-8">
+        <a href="#hero" className="flex items-center gap-3">
+          <span className="grid h-8 w-8 place-items-center rounded-[6px] bg-white text-[10px] font-black tracking-tight text-kpmg">
+            KPMG
+          </span>
+          <span className="h-4 w-px bg-white/15" />
+          <span className="font-display text-[15px] font-semibold tracking-tight text-white">
+            DSIP
+          </span>
+          <span className="hidden font-mono text-[10px] uppercase tracking-[0.14em] text-white/35 sm:inline">
+            v2.0
+          </span>
+        </a>
+
+        <div className="hidden items-center gap-3 lg:flex">
+          <CommandPalette />
+          <Button size="default">Request access</Button>
+        </div>
+
+        <button
+          className="grid h-9 w-9 place-items-center rounded-full border border-white/10 text-white/70 lg:hidden"
+          onClick={() => setOpen((v) => !v)}
+          aria-label={open ? "Close menu" : "Open menu"}
+          aria-expanded={open}
+        >
+          {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+        </button>
+      </div>
+
+      <AnimatePresence>
+        {open ? (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            className="overflow-hidden border-t border-white/[.06] bg-[#05070c]/95 backdrop-blur-xl lg:hidden"
+          >
+            <div className="grid grid-cols-2 gap-1 p-4">
+              {SECTIONS.filter((s) => s.id !== "hero").map((s) => (
+                <a
+                  key={s.id}
+                  href={`#${s.id}`}
+                  onClick={() => setOpen(false)}
+                  className="rounded-lg px-3 py-2.5 font-mono text-xs uppercase tracking-wide text-white/60 hover:bg-white/[.06] hover:text-white"
+                >
+                  {s.index} {s.label}
+                </a>
+              ))}
+            </div>
+            <div className="px-4 pb-4">
+              <Button className="w-full">Request access</Button>
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </header>
+  );
+}
