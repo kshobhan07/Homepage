@@ -162,6 +162,22 @@ body {
   }
 }
 
+.dsip-sonar-ring {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: dsip-sonar 3.3s cubic-bezier(0.2, 0.6, 0.4, 1) infinite;
+}
+@keyframes dsip-sonar {
+  0% {
+    transform: scale(0.7);
+    opacity: 0.55;
+  }
+  100% {
+    transform: scale(2.75);
+    opacity: 0;
+  }
+}
+
 .dsip-hairline {
   background: linear-gradient(
     to right,

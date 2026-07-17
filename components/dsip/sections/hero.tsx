@@ -50,6 +50,10 @@ function IntelligenceEngine() {
 
   return (
     <div className="relative mx-auto w-full max-w-[560px]">
+      <div
+        className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[85%] w-[140%] -translate-x-1/2 -translate-y-1/2 rounded-[50%] opacity-70 blur-3xl"
+        style={{ background: "radial-gradient(ellipse at center, rgba(34,211,238,.28), rgba(30,111,235,.16) 45%, transparent 72%)" }}
+      />
       <div className="relative aspect-square w-full">
         <div
           className="dsip-radar-sweep pointer-events-none absolute inset-[6%] rounded-full opacity-70"
@@ -62,6 +66,21 @@ function IntelligenceEngine() {
         <svg viewBox="0 0 640 640" className="absolute inset-0 h-full w-full overflow-visible">
           <circle cx={CENTER} cy={CENTER} r={252} fill="none" stroke="rgba(255,255,255,.08)" strokeWidth="1" />
           <circle cx={CENTER} cy={CENTER} r={190} fill="none" stroke="rgba(255,255,255,.06)" strokeWidth="1" />
+
+          {!reduced &&
+            [0, 1, 2].map((i) => (
+              <circle
+                key={`sonar-${i}`}
+                cx={CENTER}
+                cy={CENTER}
+                r={92}
+                fill="none"
+                stroke="#22d3ee"
+                strokeWidth="1.5"
+                className="dsip-sonar-ring"
+                style={{ animationDelay: `${i * 1.1}s` }}
+              />
+            ))}
 
           {sources.map((s) => {
             const isActive = s.id === active.id;
