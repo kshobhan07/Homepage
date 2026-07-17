@@ -88,7 +88,7 @@ export function DarkWeb() {
   return (
     <section id="dark-web" className="mx-auto max-w-[1128px] px-5 py-24 sm:px-8">
       <SectionHeading
-        index="08"
+        index="05"
         align="center"
         kicker="Dark Web Intelligence"
         tone="red"

@@ -33,7 +33,7 @@ export function StatusBar() {
   }, []);
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 hidden border-t border-white/[.06] bg-[#05070c]/85 backdrop-blur-xl md:block">
+    <div className="fixed inset-x-0 bottom-0 z-40 hidden border-t border-white/[.06] bg-[#050b18]/85 backdrop-blur-xl md:block">
       <motion.div className="h-[2px] origin-left bg-gradient-to-r from-signal-blue via-signal-teal to-signal-indigo" style={{ scaleX: progress }} />
       <div className="mx-auto flex h-9 max-w-[1400px] items-center justify-between px-6 font-mono text-[10px] uppercase tracking-[0.1em] text-white/40">
         <div className="flex items-center gap-5">

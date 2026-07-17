@@ -103,8 +103,8 @@ export function LatticeField({ className }: { className?: string }) {
           const x = a.x + (b.x - a.x) * p.t;
           const y = a.y + (b.y - a.y) * p.t;
           const grd = ctx!.createRadialGradient(x, y, 0, x, y, 5);
-          grd.addColorStop(0, "rgba(46,230,184,.9)");
-          grd.addColorStop(1, "rgba(46,230,184,0)");
+          grd.addColorStop(0, "rgba(34,211,238,.9)");
+          grd.addColorStop(1, "rgba(34,211,238,0)");
           ctx!.fillStyle = grd;
           ctx!.beginPath();
           ctx!.arc(x, y, 5, 0, Math.PI * 2);

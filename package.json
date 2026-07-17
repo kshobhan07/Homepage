@@ -1,6 +1,6 @@
 {
-  "name": "kpmg-dsip-v2",
-  "version": "2.0.0",
+  "name": "kpmg-dsip",
+  "version": "3.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -9,16 +9,13 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.6",
     "lucide-react": "^0.468.0",
     "next": "^15.3.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "recharts": "^2.15.3",
-    "tailwind-merge": "^2.5.5",
-    "zustand": "^5.0.6"
+    "tailwind-merge": "^2.5.5"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",

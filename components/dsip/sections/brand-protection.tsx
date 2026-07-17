@@ -8,10 +8,10 @@ import { Panel, SectionHeading } from "../primitives/kit";
 type Stage = "Detected" | "Investigating" | "Takedown filed" | "Resolved";
 
 const stageColor: Record<Stage, string> = {
-  Detected: "#2f6fed",
-  Investigating: "#f5a623",
-  "Takedown filed": "#6e7cf6",
-  Resolved: "#2ee6b8",
+  Detected: "#1e6feb",
+  Investigating: "#f2a93b",
+  "Takedown filed": "#1552c4",
+  Resolved: "#22d3ee",
 };
 
 type Case = { Icon: LucideIcon; title: string; detail: string; stage: Stage };
@@ -78,17 +78,55 @@ function InvestigationBoard() {
   );
 }
 
+const evidence = [
+  { url: "acme-corp-login.io/user/login.html", ip: "194.195.116.77", registrar: "Bizcn.com, Inc." },
+  { url: "acme-secure-portal.com/verify/account", ip: "151.101.2.137", registrar: "EuroDNS S.A" },
+  { url: "acme.myrewards-verify.com/signin", ip: "18.163.190.53", registrar: "Gname.com Pte. Ltd." },
+];
+
+function PhishingEvidence() {
+  return (
+    <Panel className="mt-4 overflow-hidden !rounded-[18px] p-0">
+      <div className="flex items-center justify-between border-b border-white/[.07] px-5 py-3.5">
+        <span className="font-mono text-[11px] uppercase tracking-wide text-white/45">Potential phishing domains — matched evidence</span>
+        <span className="rounded-full border border-signal-red/30 bg-signal-red/10 px-2.5 py-0.5 font-mono text-[10px] text-signal-red">3 identified · High</span>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[520px] text-left text-sm">
+          <thead>
+            <tr className="border-b border-white/[.07] font-mono text-[10px] uppercase tracking-wide text-white/35">
+              <th className="px-5 py-3 font-normal">URL</th>
+              <th className="px-5 py-3 font-normal">IP</th>
+              <th className="px-5 py-3 font-normal">Registrar</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-white/[.06]">
+            {evidence.map((e) => (
+              <tr key={e.url}>
+                <td className="px-5 py-3 font-mono text-xs text-white/80">{e.url}</td>
+                <td className="px-5 py-3 font-mono text-xs text-white/50">{e.ip}</td>
+                <td className="px-5 py-3 text-xs text-white/50">{e.registrar}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Panel>
+  );
+}
+
 export function BrandProtection() {
   return (
     <section id="brand-protection" className="mx-auto max-w-[1400px] px-5 py-24 sm:px-8">
       <SectionHeading
-        index="07"
+        index="04"
         kicker="Brand Protection"
         tone="amber"
         title="Catch impersonation before customers do"
         description="Every case moves through one investigation queue, start to takedown — this is that queue, live."
       />
       <InvestigationBoard />
+      <PhishingEvidence />
     </section>
   );
 }

@@ -13,7 +13,7 @@ const vipEvents = [
   { day: "Fri", label: "Impersonation attempt", detail: "Lookalike domain used to send a wire-transfer request as the CFO.", severity: "High" as const },
 ];
 
-const severityColor = { Critical: "#ff4d5e", High: "#f5a623", Medium: "#2f6fed" } as const;
+const severityColor = { Critical: "#e23a4e", High: "#f2a93b", Medium: "#1e6feb" } as const;
 
 function ExposureTimeline() {
   const [active, setActive] = useState(vipEvents[2]);
@@ -122,7 +122,7 @@ function AuthenticityAnalyzer() {
             <p className="text-sm text-white/55">Analyzing signal for synthetic artifacts&hellip;</p>
           ) : result ? (
             <div className="flex items-center gap-4">
-              <RadialGauge value={result.confidence} size={64} stroke={6} color="#ff4d5e" label="conf." />
+              <RadialGauge value={result.confidence} size={64} stroke={6} color="#e23a4e" label="conf." />
               <div>
                 <Tag tone="red">Synthetic media detected</Tag>
                 <p className="mt-1.5 text-xs text-white/50">{result.detail}</p>
@@ -141,7 +141,7 @@ export function VipDeepfake() {
   return (
     <section id="vip" className="mx-auto max-w-[1248px] px-5 py-24 sm:px-8">
       <SectionHeading
-        index="09"
+        index="06"
         kicker="VIP & Deepfake Monitoring"
         tone="red"
         title="Protect the people whose reputation is the company's risk"

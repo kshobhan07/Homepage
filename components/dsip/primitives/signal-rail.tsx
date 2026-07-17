@@ -49,7 +49,7 @@ export function SignalRail() {
           className="absolute left-0 h-2 w-2 -translate-x-[2.5px] rounded-full shadow-[0_0_10px_currentColor]"
           animate={{ top: `${(activeIndex / (SECTIONS.length - 1)) * 100}%` }}
           transition={{ type: "spring", stiffness: 120, damping: 20 }}
-          style={{ color: "#2ee6b8" }}
+          style={{ color: "#22d3ee" }}
         >
           <span className="block h-2 w-2 rounded-full bg-signal-teal" />
         </motion.div>
