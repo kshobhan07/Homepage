@@ -1,0 +1,173 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #05070c;
+  color: rgba(255, 255, 255, 0.92);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: rgba(47, 111, 237, 0.35);
+  color: #fff;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #05070c;
+}
+::-webkit-scrollbar-thumb {
+  background: #1c2230;
+  border-radius: 999px;
+  border: 2px solid #05070c;
+}
+
+:focus-visible {
+  outline: 2px solid #2f6fed;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- Instrument-panel utility classes ---------- */
+
+.dsip-grain {
+  position: relative;
+}
+.dsip-grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  opacity: 0.35;
+  mix-blend-mode: overlay;
+}
+
+.dsip-panel {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015));
+  border-radius: 14px;
+  box-shadow:
+    0 30px 100px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px);
+}
+
+.dsip-mono-label {
+  font-family: var(--font-mono), monospace;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.dsip-caret::after {
+  content: "▌";
+  margin-left: 2px;
+  animation: dsip-blink 1s step-end infinite;
+  color: #2ee6b8;
+}
+
+@keyframes dsip-blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.dsip-radar-sweep {
+  animation: dsip-spin 6s linear infinite;
+}
+@keyframes dsip-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.dsip-scanlines {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.035) 0px,
+    rgba(255, 255, 255, 0.035) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+}
+
+.dsip-edge-flow {
+  stroke-dasharray: 6 10;
+  animation: dsip-dash 3.4s linear infinite;
+}
+@keyframes dsip-dash {
+  to {
+    stroke-dashoffset: -160;
+  }
+}
+
+.dsip-scan-sweep {
+  background: linear-gradient(to bottom, transparent, rgba(46, 230, 184, 0.1), transparent);
+  animation: dsip-scan-y 5s ease-in-out infinite;
+}
+@keyframes dsip-scan-y {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(420%);
+  }
+}
+
+.dsip-pulse {
+  animation: dsip-pulse-scale 2.2s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@keyframes dsip-pulse-scale {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(1.6);
+  }
+}
+
+.dsip-hairline {
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255, 255, 255, 0.16),
+    transparent
+  );
+  height: 1px;
+}
