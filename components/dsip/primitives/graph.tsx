@@ -61,7 +61,7 @@ export function GraphNode({
   y,
   width = 168,
   height = 52,
-  color = "#2f6fed",
+  color = "#1e6feb",
   critical = false,
   children,
 }: {
@@ -78,7 +78,7 @@ export function GraphNode({
       <div
         className={cn(
           "flex h-full w-full flex-col justify-center rounded-[10px] border px-3 py-2 backdrop-blur-sm",
-          critical ? "bg-signal-red/[.12]" : "bg-[#0a0e16]/95",
+          critical ? "bg-signal-red/[.12]" : "bg-[#0a1428]/95",
         )}
         style={{ borderColor: color, boxShadow: `0 0 26px ${color}25` }}
       >

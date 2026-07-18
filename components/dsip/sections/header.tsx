@@ -18,7 +18,7 @@ export function Header() {
     <header
       className={cn(
         "fixed inset-x-0 top-0 z-50 border-b transition-colors duration-300",
-        solid ? "border-white/[.06] bg-[#05070c]/80 backdrop-blur-xl" : "border-transparent bg-transparent",
+        solid ? "border-white/[.06] bg-[#050b18]/80 backdrop-blur-xl" : "border-transparent bg-transparent",
       )}
     >
       <div className="mx-auto flex h-16 max-w-[1400px] items-center justify-between px-5 sm:px-8">
@@ -31,7 +31,7 @@ export function Header() {
             DSIP
           </span>
           <span className="hidden font-mono text-[10px] uppercase tracking-[0.14em] text-white/35 sm:inline">
-            v2.0
+            v3.0
           </span>
         </a>
 
@@ -57,7 +57,7 @@ export function Header() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className="overflow-hidden border-t border-white/[.06] bg-[#05070c]/95 backdrop-blur-xl lg:hidden"
+            className="overflow-hidden border-t border-white/[.06] bg-[#050b18]/95 backdrop-blur-xl lg:hidden"
           >
             <div className="grid grid-cols-2 gap-1 p-4">
               {SECTIONS.filter((s) => s.id !== "hero").map((s) => (

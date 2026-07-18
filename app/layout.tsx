@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Inter, Barlow_Condensed, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
 const inter = Inter({
@@ -8,9 +8,10 @@ const inter = Inter({
   display: "swap",
 });
 
-const grotesk = Space_Grotesk({
+const condensed = Barlow_Condensed({
   subsets: ["latin"],
-  variable: "--font-grotesk",
+  weight: ["600", "700", "800"],
+  variable: "--font-condensed",
   display: "swap",
 });
 
@@ -21,21 +22,21 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "DSIP — Digital Signals Intelligence Platform | KPMG",
+  title: "DSIP — Digital Signals Insights Platform | KPMG",
   description:
-    "The AI-native command center for external cyber risk. DSIP discovers your digital footprint, correlates threat intelligence into business context, and prioritizes what actually matters — built by KPMG.",
+    "Complete 360° protection against digital threats, powered by Gen AI. DSIP unifies attack surface management, brand protection, threat intelligence and dark web monitoring into one AI-native platform — built by KPMG.",
   metadataBase: new URL("https://dsip.kpmg.com"),
 };
 
 export const viewport: Viewport = {
-  themeColor: "#05070c",
+  themeColor: "#050b18",
   width: "device-width",
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${inter.variable} ${grotesk.variable} ${mono.variable}`}>
+    <html lang="en" className={`${inter.variable} ${condensed.variable} ${mono.variable}`}>
       <body>{children}</body>
     </html>
   );

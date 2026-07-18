@@ -6,8 +6,8 @@ import { ArrowRight, Check, Fingerprint, LockKeyhole } from "lucide-react";
 import { Button, Panel } from "../primitives/kit";
 
 const footerColumns = [
-  ["Product", ["Overview", "Platform modules", "Intellicore AI", "Architecture"]],
-  ["Risk domains", ["Attack surface", "AI attack surface", "Dark web", "Brand protection", "Third-party risk"]],
+  ["Product", ["Why DSIP", "Intellicore AI", "Our approach", "Platform snapshot"]],
+  ["Risk domains", ["Attack surface", "Brand protection", "Dark web", "VIP & deepfake", "Third-party risk"]],
   ["Company", ["KPMG India", "Contact", "Privacy"]],
 ] as const;
 
@@ -17,7 +17,7 @@ function RequestAccessPanel() {
 
   return (
     <Panel className="relative mx-auto max-w-2xl overflow-hidden !rounded-[16px] p-0">
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_0%,rgba(47,111,237,.28),transparent_70%)]" />
+      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_0%,rgba(30,111,235,.28),transparent_70%)]" />
       <div className="flex items-center justify-between border-b border-white/[.07] px-5 py-3.5">
         <span className="font-mono text-[11px] uppercase tracking-wide text-white/45">secure-access.request</span>
         <span className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-wide text-white/35">
@@ -81,7 +81,8 @@ export function CTAFooter() {
               <span className="font-display font-semibold text-white">KPMG DSIP</span>
             </div>
             <p className="max-w-xs text-sm leading-6 text-white/45">
-              Digital Signals Intelligence Platform for AI-powered cyber, brand and external risk operations.
+              Digital Signals Insights Platform — complete 360° protection against digital threats, powered by
+              Gen AI.
             </p>
           </div>
           {footerColumns.map(([title, items]) => (
@@ -97,8 +98,9 @@ export function CTAFooter() {
             </div>
           ))}
         </div>
-        <div className="mx-auto mt-10 max-w-[1128px] border-t border-white/[.06] pt-6 font-mono text-[11px] text-white/30">
-          © {new Date().getFullYear()} KPMG. Digital Signals Intelligence Platform. All rights reserved.
+        <div className="mx-auto mt-10 flex max-w-[1128px] flex-col gap-2 border-t border-white/[.06] pt-6 font-mono text-[11px] text-white/30 sm:flex-row sm:items-center sm:justify-between">
+          <span>© {new Date().getFullYear()} KPMG. Digital Signals Insights Platform. All rights reserved.</span>
+          <span>Powered on Microsoft Azure</span>
         </div>
       </footer>
     </>

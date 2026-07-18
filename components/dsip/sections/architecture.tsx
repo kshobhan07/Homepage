@@ -1,97 +1,101 @@
 "use client";
 
-import React from "react";
-import { Cloud, Fingerprint, Globe2, MessageSquareWarning, ShieldAlert } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import { Panel, SectionHeading, Tag } from "../primitives/kit";
 import { usePrefersReducedMotion } from "../primitives/hooks";
+import { cn } from "@/lib/utils";
 
-const sources = [
-  { label: "Domains & DNS", Icon: Globe2, y: 40 },
-  { label: "Cloud assets", Icon: Cloud, y: 110 },
-  { label: "Dark web", Icon: MessageSquareWarning, y: 180 },
-  { label: "Vulnerabilities", Icon: ShieldAlert, y: 250 },
-  { label: "Certificates", Icon: Fingerprint, y: 320 },
+type Step = { text: string; who: "A" | "M" };
+type Phase = { id: string; label: string; steps: Step[] };
+
+const phases: Phase[] = [
+  { id: "gather", label: "Gather", steps: [{ text: "Identify risks & scope", who: "A" }, { text: "Define reporting cadence", who: "A" }] },
+  { id: "discover", label: "Discover", steps: [{ text: "Configure & scan platform", who: "M" }, { text: "Apply industry risk taxonomy", who: "M" }] },
+  { id: "analyze", label: "Analyze", steps: [{ text: "Classify via local LLM", who: "M" }, { text: "Correlate & tune with analyst feedback", who: "A" }] },
+  { id: "report", label: "Report", steps: [{ text: "Generate AI threat reports", who: "M" }, { text: "Visualize risk & impact", who: "A" }] },
+  { id: "remediate", label: "Remediate", steps: [{ text: "Evaluate probability & impact", who: "A" }, { text: "Act: takedown & re-scan", who: "M" }] },
 ];
 
-const outputs = ["Splunk", "Sentinel", "ServiceNow", "Slack", "Jira", "CrowdStrike", "Okta", "AWS Sec Hub", "PagerDuty", "Salesforce"];
-
-function FlowParticles({ x1, y1, x2, y2, delay = 0 }: { x1: number; y1: number; x2: number; y2: number; delay?: number }) {
+function ProcessFlow() {
   const reduced = usePrefersReducedMotion();
-  if (reduced) return null;
-  const d = `M${x1},${y1} L${x2},${y2}`;
-  return (
-    <circle r="2.4" fill="#2ee6b8">
-      <animateMotion dur="2.6s" begin={`${delay}s`} repeatCount="indefinite" path={d} />
-    </circle>
-  );
-}
+  const [active, setActive] = useState(0);
 
-function LivingArchitecture() {
-  const coreX = 330;
-  const coreY = 180;
-  const sourceX = 90;
-  const outputX = 570;
+  useEffect(() => {
+    if (reduced) return;
+    const id = setInterval(() => setActive((a) => (a + 1) % phases.length), 2600);
+    return () => clearInterval(id);
+  }, [reduced]);
 
   return (
-    <Panel className="overflow-hidden !rounded-[18px] p-0">
-      <div className="flex items-center justify-between border-b border-white/[.07] px-5 py-3.5">
-        <span className="font-mono text-[11px] uppercase tracking-wide text-white/45">Platform architecture — live data flow</span>
-        <Tag tone="blue">Signals in. Action out.</Tag>
-      </div>
-      <div className="relative h-[420px] w-full overflow-hidden lg:h-[380px]">
-        <svg viewBox="0 0 660 360" className="absolute inset-0 h-full w-full" preserveAspectRatio="xMidYMid meet">
-          <defs>
-            <pattern id="arch-grid" width="26" height="26" patternUnits="userSpaceOnUse">
-              <path d="M 26 0 L 0 0 0 26" fill="none" stroke="rgba(255,255,255,.045)" strokeWidth="1" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#arch-grid)" />
-
-          {sources.map((s, i) => (
-            <line key={s.label} x1={sourceX + 58} y1={s.y} x2={coreX - 70} y2={coreY} stroke="rgba(255,255,255,.1)" strokeWidth="1" />
-          ))}
-          {sources.map((s, i) => (
-            <FlowParticles key={s.label} x1={sourceX + 58} y1={s.y} x2={coreX - 70} y2={coreY} delay={i * 0.4} />
-          ))}
-
-          {outputs.slice(0, 6).map((name, i) => {
-            const y = 60 + i * 48;
-            return <line key={`l-${name}`} x1={coreX + 70} y1={coreY} x2={outputX - 4} y2={y} stroke="rgba(255,255,255,.1)" strokeWidth="1" />;
-          })}
-          {outputs.slice(0, 6).map((name, i) => {
-            const y = 60 + i * 48;
-            return <FlowParticles key={`p-${name}`} x1={coreX + 70} y1={coreY} x2={outputX - 4} y2={y} delay={i * 0.35} />;
-          })}
-        </svg>
-
-        <div className="absolute inset-y-0 left-0 flex w-[130px] flex-col justify-around py-4 pl-3">
-          {sources.map((s) => (
-            <div key={s.label} className="flex items-center gap-2 rounded-full border border-white/10 bg-[#0a0e16]/90 px-2.5 py-1.5">
-              <s.Icon className="h-3 w-3 shrink-0 text-signal-blue" />
-              <span className="truncate font-mono text-[9.5px] text-white/65">{s.label}</span>
-            </div>
-          ))}
-        </div>
-
-        <div className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center gap-2 rounded-2xl border border-signal-blue/40 bg-signal-blue/10 px-6 py-5 text-center shadow-[0_0_50px_rgba(47,111,237,.25)]">
-          <span className="font-display text-sm font-bold text-white">Correlation Core</span>
-          <span className="font-mono text-[9px] uppercase tracking-wide text-white/50">Intellicore AI · Knowledge Graph</span>
-        </div>
-
-        <div className="absolute inset-y-0 right-0 flex w-[150px] flex-col justify-around py-3 pr-3">
-          {outputs.slice(0, 6).map((name) => (
-            <div key={name} className="rounded-full border border-white/10 bg-[#0a0e16]/90 px-3 py-1.5 text-center font-mono text-[10px] text-white/70">
-              {name}
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="flex flex-wrap gap-2 border-t border-white/[.07] px-5 py-4">
-        {outputs.map((name) => (
-          <span key={name} className="rounded-full border border-white/10 bg-white/[.03] px-3 py-1 font-mono text-[10px] text-white/45">
-            {name}
-          </span>
+    <Panel className="overflow-hidden !rounded-[20px] p-6 sm:p-8">
+      <div className="relative mb-10 hidden items-center justify-between sm:flex">
+        <div className="absolute left-0 right-0 top-1/2 h-px -translate-y-1/2 bg-white/10" />
+        {!reduced ? (
+          <svg viewBox="0 0 1000 4" preserveAspectRatio="none" className="absolute inset-x-0 top-1/2 h-2 w-full -translate-y-1/2 overflow-visible">
+            <circle r="4" fill="#22d3ee">
+              <animateMotion dur="6s" repeatCount="indefinite" path="M0,2 L1000,2" />
+            </circle>
+          </svg>
+        ) : null}
+        {phases.map((phase, i) => (
+          <button
+            key={phase.id}
+            onClick={() => setActive(i)}
+            className="relative z-10 flex flex-col items-center gap-2"
+          >
+            <span
+              className={cn(
+                "grid h-4 w-4 place-items-center rounded-full border-2 transition-all",
+                i === active ? "border-signal-blue bg-signal-blue scale-125" : "border-white/25 bg-[#050b18]",
+              )}
+            />
+            <span className={cn("font-mono text-[11px] uppercase tracking-wide", i === active ? "text-white" : "text-white/40")}>
+              {phase.label}
+            </span>
+          </button>
         ))}
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-5">
+        {phases.map((phase, i) => (
+          <div
+            key={phase.id}
+            onMouseEnter={() => setActive(i)}
+            className={cn(
+              "rounded-xl border p-4 transition-colors",
+              i === active ? "border-signal-blue/40 bg-signal-blue/[.06]" : "border-white/10 bg-white/[.02]",
+            )}
+          >
+            <p className="mb-3 font-mono text-[10px] uppercase tracking-wide text-white/40 sm:hidden">{phase.label}</p>
+            <div className="space-y-2.5">
+              {phase.steps.map((step) => (
+                <div key={step.text} className="flex items-start gap-2">
+                  <span
+                    className={cn(
+                      "mt-0.5 grid h-4 w-4 shrink-0 place-items-center rounded-[4px] font-mono text-[9px] font-bold",
+                      step.who === "A" ? "bg-signal-indigo/25 text-[#9fc4f5]" : "bg-signal-teal/20 text-signal-teal",
+                    )}
+                  >
+                    {step.who}
+                  </span>
+                  <p className="text-xs leading-5 text-white/70">{step.text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-5">
+        <div className="flex items-center gap-4 font-mono text-[10px] uppercase tracking-wide text-white/35">
+          <span className="flex items-center gap-1.5">
+            <span className="grid h-4 w-4 place-items-center rounded-[4px] bg-signal-indigo/25 text-[9px] font-bold text-[#9fc4f5]">A</span> Analyst
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="grid h-4 w-4 place-items-center rounded-[4px] bg-signal-teal/20 text-[9px] font-bold text-signal-teal">M</span> Machine
+          </span>
+        </div>
+        <Tag tone="blue">Powered on Microsoft Azure</Tag>
       </div>
     </Panel>
   );
@@ -101,14 +105,14 @@ export function Architecture() {
   return (
     <section id="architecture" className="mx-auto max-w-[1200px] px-5 py-24 sm:px-8">
       <SectionHeading
-        index="13"
+        index="08"
         align="center"
-        kicker="Platform Architecture"
+        kicker="Our Approach"
         tone="blue"
-        title="One living system, not a stack of point tools"
-        description="Every signal source feeds the same correlation core, and every finding pushes into the tools your team already lives in — no new inbox to check."
+        title="Gather. Discover. Analyze. Report. Remediate."
+        description="A twelve-step cycle shared between analyst judgment and machine speed — the same pipeline that runs behind every module above."
       />
-      <LivingArchitecture />
+      <ProcessFlow />
     </section>
   );
 }

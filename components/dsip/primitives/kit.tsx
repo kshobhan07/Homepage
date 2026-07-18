@@ -30,7 +30,7 @@ export function Tag({
     teal: "border-signal-teal/30 bg-signal-teal/10 text-signal-teal",
     amber: "border-signal-amber/30 bg-signal-amber/10 text-signal-amber",
     red: "border-signal-red/30 bg-signal-red/10 text-signal-red",
-    indigo: "border-signal-indigo/30 bg-signal-indigo/10 text-[#a7b0f9]",
+    indigo: "border-signal-indigo/30 bg-signal-indigo/10 text-[#8fbdf5]",
   };
   return (
     <span
@@ -47,10 +47,10 @@ export function Tag({
 
 export function PulseDot({ tone = "teal", className }: { tone?: "teal" | "red" | "amber" | "blue"; className?: string }) {
   const colors: Record<string, string> = {
-    teal: "#2ee6b8",
-    red: "#ff4d5e",
-    amber: "#f5a623",
-    blue: "#2f6fed",
+    teal: "#22d3ee",
+    red: "#e23a4e",
+    amber: "#f2a93b",
+    blue: "#1e6feb",
   };
   return (
     <span className={cn("relative inline-flex h-2 w-2 shrink-0", className)} aria-hidden>
@@ -75,7 +75,7 @@ export function Button({
 }) {
   const variants: Record<string, string> = {
     primary:
-      "bg-signal-blue text-white shadow-[0_0_0_1px_rgba(47,111,237,.4),0_20px_50px_-12px_rgba(47,111,237,.6)] hover:bg-[#4a80f2]",
+      "bg-signal-blue text-white shadow-[0_0_0_1px_rgba(30,111,235,.4),0_20px_50px_-12px_rgba(30,111,235,.6)] hover:bg-[#3a83f0]",
     secondary: "border border-white/15 bg-white/[.04] text-white/85 hover:bg-white/[.08]",
     ghost: "text-white/70 hover:bg-white/[.06] hover:text-white",
   };
@@ -143,7 +143,7 @@ export function SectionHeading({
   return (
     <div className={cn("mb-12 max-w-3xl", align === "center" && "mx-auto text-center")}>
       <SectionKicker index={index} label={kicker} tone={tone} />
-      <h2 className="text-balance font-display text-3xl font-semibold leading-[1.08] tracking-tight text-white sm:text-4xl lg:text-[2.75rem]">
+      <h2 className="text-balance font-display text-4xl font-bold leading-[1.02] tracking-tight text-white sm:text-5xl lg:text-[3.25rem]">
         {title}
       </h2>
       {description ? (

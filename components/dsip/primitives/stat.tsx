@@ -45,7 +45,7 @@ export function RadialGauge({
   max = 100,
   size = 88,
   stroke = 7,
-  color = "#2f6fed",
+  color = "#1e6feb",
   trackColor = "rgba(255,255,255,.08)",
   label,
 }: {
