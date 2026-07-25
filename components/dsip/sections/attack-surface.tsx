@@ -1,12 +1,16 @@
 "use client";
 
 import React, { useState } from "react";
+import dynamic from "next/dynamic";
 import { AnimatePresence, motion } from "framer-motion";
 import { Fingerprint, Globe2, Server, ShieldAlert } from "lucide-react";
-import { SectionHeading, Tag } from "../primitives/kit";
+import { SectionKicker, Tag } from "../primitives/kit";
 import { StatCounter } from "../primitives/stat";
 import { TintWash } from "../primitives/section-backgrounds";
-import { cn } from "@/lib/utils";
+import { usePrefersReducedMotion } from "../primitives/hooks";
+import type { UniverseNode } from "../three/cyber-universe-scene";
+
+const CyberUniverseScene = dynamic(() => import("../three/cyber-universe-scene"), { ssr: false });
 
 const stats = [
   { label: "Organizations", value: 100, suffix: "+", Icon: Globe2 },
@@ -18,20 +22,23 @@ const stats = [
 type Category = {
   id: string;
   label: string;
-  x: number;
-  y: number;
+  color: string;
   covers: string[];
   findings: { text: string; risk: "Critical" | "High" | "Medium" | "Low" }[];
 };
 
-const CENTER = 300;
+const riskColor: Record<string, string> = {
+  Critical: "#e23a4e",
+  High: "#f2a93b",
+  Medium: "#1e6feb",
+  Low: "#22d3ee",
+};
 
 const categories: Category[] = [
   {
     id: "internet",
     label: "Internet Assets",
-    x: 300,
-    y: 78,
+    color: riskColor.Low,
     covers: ["Domains", "Subdomains", "DNS", "Certificates"],
     findings: [
       { text: "24,680 domains & subdomains mapped", risk: "Low" },
@@ -42,8 +49,7 @@ const categories: Category[] = [
   {
     id: "cloud",
     label: "Cloud & OT Assets",
-    x: 500,
-    y: 190,
+    color: riskColor.Critical,
     covers: ["Cloud Assets", "OT Assets"],
     findings: [
       { text: "18 public cloud buckets identified", risk: "High" },
@@ -54,8 +60,7 @@ const categories: Category[] = [
   {
     id: "tech",
     label: "Tech & Vulnerabilities",
-    x: 500,
-    y: 412,
+    color: riskColor.High,
     covers: ["Technology Disclosure", "Infrastructure Vulnerabilities", "CVEs"],
     findings: [
       { text: "6,795 CVEs correlated to your stack", risk: "High" },
@@ -66,8 +71,7 @@ const categories: Category[] = [
   {
     id: "rogue",
     label: "Rogue & Unknown Assets",
-    x: 300,
-    y: 522,
+    color: riskColor.Medium,
     covers: ["Rogue Assets", "Unknown Assets"],
     findings: [
       { text: "37 unknown assets discovered this month", risk: "Medium" },
@@ -78,8 +82,7 @@ const categories: Category[] = [
   {
     id: "surface",
     label: "Open Surface",
-    x: 100,
-    y: 412,
+    color: riskColor.Medium,
     covers: ["Open Ports", "Login Panels"],
     findings: [
       { text: "9 open non-standard ports", risk: "Medium" },
@@ -90,8 +93,7 @@ const categories: Category[] = [
   {
     id: "email",
     label: "Email & SSL Posture",
-    x: 100,
-    y: 190,
+    color: riskColor.High,
     covers: ["Email Misconfiguration", "SSL Misconfiguration", "Security Headers"],
     findings: [
       { text: "SPF / DKIM / DMARC gaps on 4 domains", risk: "High" },
@@ -101,12 +103,14 @@ const categories: Category[] = [
   },
 ];
 
-const riskColor: Record<string, string> = {
-  Critical: "#e23a4e",
-  High: "#f2a93b",
-  Medium: "#1e6feb",
-  Low: "#22d3ee",
-};
+const universeNodes: UniverseNode[] = categories.map((c, i) => ({
+  id: c.id,
+  label: c.label,
+  color: c.color,
+  angle: (i / categories.length) * Math.PI * 2,
+  radius: 2.6,
+  y: i % 2 === 0 ? 0.3 : -0.3,
+}));
 
 const timeline = [
   { time: "00:02", event: "New subdomain discovered via certificate transparency logs" },
@@ -116,77 +120,36 @@ const timeline = [
   { time: "03:58", event: "Risk score recalculated after asset criticality change" },
 ];
 
-function LiveTopology() {
-  const [active, setActive] = useState<Category>(categories[1]);
+function LivingUniverse() {
+  const reduced = usePrefersReducedMotion();
+  const [activeId, setActiveId] = useState<string>("cloud");
+  const active = categories.find((c) => c.id === activeId) ?? categories[1];
 
   return (
     <div className="relative">
       <div className="mb-6 flex items-center justify-between">
-        <span className="font-mono text-[11px] uppercase tracking-wide text-white/35">Live cyber topology</span>
+        <span className="font-mono text-[11px] uppercase tracking-wide text-white/35">Living cyber universe</span>
         <Tag tone="teal">
           <span className="mr-1.5 inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-signal-teal" /> Discovering
         </Tag>
       </div>
 
       <div className="relative grid gap-2 lg:grid-cols-[1fr_260px]">
-        <div className="relative h-[560px] overflow-visible">
-          <div className="dsip-scan-sweep pointer-events-none absolute inset-x-0 h-24" />
-          <svg viewBox="0 0 600 600" className="absolute inset-0 h-full w-full overflow-visible">
-            <defs>
-              <radialGradient id="asm-core-glow" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stopColor="rgba(30,111,235,.22)" />
-                <stop offset="100%" stopColor="transparent" />
-              </radialGradient>
-            </defs>
-            <circle cx={CENTER} cy={CENTER} r={260} fill="url(#asm-core-glow)" />
-            <circle cx={CENTER} cy={CENTER} r={215} fill="none" stroke="rgba(255,255,255,.06)" strokeWidth="1" strokeDasharray="2 6" />
-            <circle cx={CENTER} cy={CENTER} r={150} fill="none" stroke="rgba(255,255,255,.05)" strokeWidth="1" />
-
-            {categories.map((c) => {
-              const isActive = c.id === active.id;
-              return (
-                <line
-                  key={`line-${c.id}`}
-                  x1={CENTER}
-                  y1={CENTER}
-                  x2={c.x}
-                  y2={c.y}
-                  stroke={isActive ? riskColor[c.findings[0].risk] : "rgba(255,255,255,.1)"}
-                  strokeWidth={isActive ? 1.6 : 1}
-                  className={isActive ? "dsip-edge-flow" : undefined}
-                />
-              );
-            })}
-
-            <circle cx={CENTER} cy={CENTER} r={58} fill="#050b18" stroke="#1e6feb" strokeWidth="1.5" />
-            <foreignObject x={CENTER - 56} y={CENTER - 56} width={112} height={112}>
-              <div className="flex h-full w-full flex-col items-center justify-center text-center">
-                <span className="font-display text-sm font-bold tracking-tight text-white">acme-corp</span>
-                <span className="mt-0.5 font-mono text-[8px] uppercase text-white/40">attack surface</span>
+        <div className="relative h-[520px] overflow-visible">
+          {!reduced ? (
+            <CyberUniverseScene
+              nodes={universeNodes}
+              activeId={activeId}
+              onHover={setActiveId}
+              onLeave={() => {}}
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center">
+              <div className="grid h-28 w-28 place-items-center rounded-full border border-signal-blue/40 bg-signal-blue/10">
+                <span className="font-display text-sm font-bold text-white">acme-corp</span>
               </div>
-            </foreignObject>
-
-            {categories.map((c) => {
-              const isActive = c.id === active.id;
-              return (
-                <foreignObject key={c.id} x={c.x - 84} y={c.y - 22} width={168} height={44} style={{ overflow: "visible" }}>
-                  <button
-                    onMouseEnter={() => setActive(c)}
-                    onFocus={() => setActive(c)}
-                    className={cn(
-                      "mx-auto flex w-full items-center justify-center rounded-full border px-3 py-2 font-mono text-[10px] font-medium backdrop-blur-md transition-all",
-                      isActive
-                        ? "border-white/40 bg-[#0a1428]/90 text-white shadow-[0_0_28px_rgba(255,255,255,.1)]"
-                        : "border-white/10 bg-[#0a1428]/60 text-white/55 hover:text-white/90",
-                    )}
-                    style={isActive ? { borderColor: riskColor[c.findings[0].risk] } : undefined}
-                  >
-                    {c.label}
-                  </button>
-                </foreignObject>
-              );
-            })}
-          </svg>
+            </div>
+          )}
 
           <AnimatePresence mode="wait">
             <motion.div
@@ -195,7 +158,7 @@ function LiveTopology() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.3 }}
-              className="absolute inset-x-0 bottom-0 flex flex-col gap-2 bg-gradient-to-t from-[#050b18] via-[#050b18]/85 to-transparent px-2 pb-2 pt-16 sm:px-6"
+              className="pointer-events-none absolute inset-x-0 bottom-0 flex flex-col gap-2 bg-gradient-to-t from-[#050b18] via-[#050b18]/85 to-transparent px-2 pb-2 pt-16 sm:px-6"
             >
               <div className="flex flex-wrap items-center gap-1.5">
                 {active.covers.map((c) => (
@@ -250,14 +213,35 @@ export function AttackSurface() {
   return (
     <section id="attack-surface" className="relative mx-auto max-w-[1400px] overflow-hidden px-5 py-24 sm:px-8">
       <TintWash tint="rgba(30,111,235,.10)" position="15% 0%" />
-      <SectionHeading
-        index="02"
-        kicker="Attack Surface & AI Asset Discovery"
-        tone="teal"
-        title="Every asset you own — and every one you didn't know about"
-        description="Internet, cloud and OT assets, email and SSL posture, open ports, technology and CVEs, rogue and unknown assets — mapped without agents, rendered as a live topology."
-      />
-      <div className="mb-10 flex flex-wrap items-center gap-x-10 gap-y-4 border-y border-white/[.06] py-5">
+
+      <div className="mb-8 max-w-3xl">
+        <SectionKicker index="02" label="Attack Surface & AI Asset Discovery" tone="teal" />
+      </div>
+
+      <LivingUniverse />
+
+      <div className="mt-10 max-w-3xl">
+        <motion.h2
+          initial={{ opacity: 0, y: 18 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="text-balance font-display text-4xl font-bold leading-[1.02] tracking-tight text-white sm:text-5xl lg:text-[3.25rem]"
+        >
+          Every asset you own — and every one you didn&rsquo;t know about
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 0.6, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-4 max-w-xl text-[15px] leading-7 text-white/55"
+        >
+          Internet, cloud and OT assets, email and SSL posture, open ports, technology and CVEs, rogue and unknown assets — mapped without agents, rendered as a living universe.
+        </motion.p>
+      </div>
+
+      <div className="mt-10 flex flex-wrap items-center gap-x-10 gap-y-4 border-y border-white/[.06] py-5">
         {stats.map(({ label, value, suffix, Icon }, i) => (
           <motion.div
             key={label}
@@ -277,7 +261,6 @@ export function AttackSurface() {
           </motion.div>
         ))}
       </div>
-      <LiveTopology />
     </section>
   );
 }
