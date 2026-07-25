@@ -4,6 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Briefcase, Copy, Globe, MessagesSquare, Smartphone, type LucideIcon } from "lucide-react";
 import { Panel, SectionHeading } from "../primitives/kit";
+import { ScanGridField } from "../primitives/section-backgrounds";
 
 type Stage = "Detected" | "Investigating" | "Takedown filed" | "Resolved";
 
@@ -101,12 +102,19 @@ function PhishingEvidence() {
             </tr>
           </thead>
           <tbody className="divide-y divide-white/[.06]">
-            {evidence.map((e) => (
-              <tr key={e.url}>
+            {evidence.map((e, i) => (
+              <motion.tr
+                key={e.url}
+                initial={{ opacity: 0, x: -8 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.06 }}
+                className="transition-colors hover:bg-signal-red/[.04]"
+              >
                 <td className="px-5 py-3 font-mono text-xs text-white/80">{e.url}</td>
                 <td className="px-5 py-3 font-mono text-xs text-white/50">{e.ip}</td>
                 <td className="px-5 py-3 text-xs text-white/50">{e.registrar}</td>
-              </tr>
+              </motion.tr>
             ))}
           </tbody>
         </table>
@@ -117,7 +125,8 @@ function PhishingEvidence() {
 
 export function BrandProtection() {
   return (
-    <section id="brand-protection" className="mx-auto max-w-[1400px] px-5 py-24 sm:px-8">
+    <section id="brand-protection" className="relative mx-auto max-w-[1400px] overflow-hidden px-5 py-24 sm:px-8">
+      <ScanGridField />
       <SectionHeading
         index="04"
         kicker="Brand Protection"

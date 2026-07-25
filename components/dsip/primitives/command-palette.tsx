@@ -43,16 +43,18 @@ export function CommandPalette() {
 
   return (
     <>
-      <button
+      <motion.button
         onClick={() => setOpen(true)}
-        className="flex h-9 items-center gap-2 rounded-full border border-white/10 bg-white/[.03] px-3.5 text-xs text-white/50 transition hover:border-white/20 hover:bg-white/[.06] hover:text-white/75"
+        whileHover={{ y: -1 }}
+        whileTap={{ scale: 0.96 }}
+        className="flex h-9 items-center gap-2 rounded-full border border-white/10 bg-white/[.03] px-3.5 text-xs text-white/50 transition-colors hover:border-white/20 hover:bg-white/[.06] hover:text-white/75"
       >
         <Search className="h-3.5 w-3.5" />
         <span className="hidden sm:inline">Ask Intellicore</span>
         <kbd className="ml-1 hidden items-center gap-0.5 rounded border border-white/10 bg-white/5 px-1.5 py-0.5 font-mono text-[10px] text-white/40 sm:flex">
           <Command className="h-2.5 w-2.5" />K
         </kbd>
-      </button>
+      </motion.button>
 
       <AnimatePresence>
         {open ? (
@@ -80,43 +82,59 @@ export function CommandPalette() {
                   <>
                     <p className="px-3 pb-1 pt-2 font-mono text-[10px] uppercase tracking-[0.12em] text-white/30">Suggested</p>
                     {prompts.map((p, i) => (
-                      <button
+                      <motion.button
                         key={p.q}
                         onClick={() => setActivePrompt(i)}
-                        className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm text-white/75 transition hover:bg-white/[.06]"
+                        whileHover="hover"
+                        initial="rest"
+                        animate="rest"
+                        className="group flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left text-sm text-white/75 transition-colors hover:bg-white/[.06]"
                       >
                         {p.q}
-                        <CornerDownLeft className="h-3.5 w-3.5 text-white/25" />
-                      </button>
+                        <motion.span variants={{ rest: { x: 0, opacity: 0.4 }, hover: { x: 3, opacity: 1 } }}>
+                          <CornerDownLeft className="h-3.5 w-3.5 text-signal-teal" />
+                        </motion.span>
+                      </motion.button>
                     ))}
                     <p className="px-3 pb-1 pt-3 font-mono text-[10px] uppercase tracking-[0.12em] text-white/30">Jump to</p>
                     <div className="grid grid-cols-2 gap-1 p-1">
                       {SECTIONS.filter((s) => s.id !== "hero").map((s) => (
-                        <a
+                        <motion.a
                           key={s.id}
                           href={`#${s.id}`}
                           onClick={() => setOpen(false)}
-                          className="rounded-lg px-3 py-2 text-xs text-white/55 transition hover:bg-white/[.06] hover:text-white/85"
+                          whileHover={{ x: 2 }}
+                          className="rounded-lg px-3 py-2 text-xs text-white/55 transition-colors hover:bg-white/[.06] hover:text-white/85"
                         >
                           {s.label}
-                        </a>
+                        </motion.a>
                       ))}
                     </div>
                   </>
                 ) : (
-                  <div className="p-3">
+                  <motion.div
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                    className="p-3"
+                  >
                     <p className="mb-3 text-sm font-medium text-white/85">{prompts[activePrompt].q}</p>
-                    <div className="flex items-start gap-2 rounded-lg border border-signal-indigo/20 bg-signal-indigo/[.06] p-3">
+                    <motion.div
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3, delay: 0.12 }}
+                      className="flex items-start gap-2 rounded-lg border border-signal-indigo/20 bg-signal-indigo/[.06] p-3"
+                    >
                       <Sparkles className="mt-0.5 h-3.5 w-3.5 shrink-0 text-signal-indigo" />
                       <p className="text-sm leading-6 text-white/75">{prompts[activePrompt].a}</p>
-                    </div>
+                    </motion.div>
                     <button
                       onClick={() => setActivePrompt(null)}
-                      className="mt-3 font-mono text-[11px] uppercase tracking-wide text-white/35 hover:text-white/60"
+                      className="mt-3 font-mono text-[11px] uppercase tracking-wide text-white/35 transition-colors hover:text-white/60"
                     >
                       &larr; Back
                     </button>
-                  </div>
+                  </motion.div>
                 )}
               </div>
             </motion.div>

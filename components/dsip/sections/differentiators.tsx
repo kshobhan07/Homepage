@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Check, ChevronDown } from "lucide-react";
 import { Panel, SectionHeading, Tag } from "../primitives/kit";
+import { SignalStreamsField } from "../primitives/section-backgrounds";
 import { cn } from "@/lib/utils";
 
 type Group = { id: string; title: string; layer: string; items: string[] };
@@ -140,7 +141,8 @@ function KeyDifferentiators() {
 
 export function Differentiators() {
   return (
-    <section id="differentiators" className="mx-auto max-w-[1400px] px-5 py-24 sm:px-8">
+    <section id="differentiators" className="relative mx-auto max-w-[1400px] overflow-hidden px-5 py-24 sm:px-8">
+      <SignalStreamsField tint="#1e6feb" />
       <SectionHeading
         index="01"
         kicker="Why DSIP"

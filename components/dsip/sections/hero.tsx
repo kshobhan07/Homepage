@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
-import { motion } from "framer-motion";
+import React, { useRef, useState } from "react";
+import dynamic from "next/dynamic";
+import { motion, useScroll, useTransform } from "framer-motion";
 import {
   ArrowRight,
   BrainCircuit,
@@ -30,6 +31,8 @@ type Source = {
   detail: string;
 };
 
+const HeroCoreScene = dynamic(() => import("../three/hero-core-scene"), { ssr: false });
+
 const CENTER = 320;
 
 // Precomputed to two decimals (not derived from Math.cos/sin at render time) so
@@ -56,18 +59,19 @@ function IntelligenceEngine() {
         style={{ background: "radial-gradient(ellipse at center, rgba(34,211,238,.28), rgba(30,111,235,.16) 45%, transparent 72%)" }}
       />
       <div className="relative aspect-square w-full">
-        <div
-          className="dsip-radar-sweep pointer-events-none absolute inset-[6%] rounded-full opacity-70"
-          style={{
-            background: "conic-gradient(from 0deg, rgba(30,111,235,.22), transparent 26%, transparent 100%)",
-            maskImage: "radial-gradient(circle, black 55%, transparent 78%)",
-            WebkitMaskImage: "radial-gradient(circle, black 55%, transparent 78%)",
-          }}
-        />
-        <svg viewBox="0 0 640 640" className="absolute inset-0 h-full w-full overflow-visible">
-          <circle cx={CENTER} cy={CENTER} r={252} fill="none" stroke="rgba(255,255,255,.08)" strokeWidth="1" />
-          <circle cx={CENTER} cy={CENTER} r={190} fill="none" stroke="rgba(255,255,255,.06)" strokeWidth="1" />
-
+        {!reduced ? (
+          <div className="absolute inset-0" aria-hidden>
+            <HeroCoreScene />
+          </div>
+        ) : (
+          <div
+            className="pointer-events-none absolute inset-[6%] rounded-full opacity-70"
+            style={{
+              background: "radial-gradient(circle, rgba(34,211,238,.16), transparent 70%)",
+            }}
+          />
+        )}
+        <svg viewBox="0 0 640 640" className="pointer-events-none absolute inset-0 h-full w-full overflow-visible">
           {!reduced &&
             [0, 1, 2].map((i) => (
               <circle
@@ -111,12 +115,10 @@ function IntelligenceEngine() {
               </circle>
             ))}
 
-          <circle cx={CENTER} cy={CENTER} r={92} fill="#050b18" stroke="#1e6feb" strokeWidth="1.5" />
-          <circle cx={CENTER} cy={CENTER} r={92} fill="rgba(30,111,235,.12)" />
-          <foreignObject x={CENTER - 88} y={CENTER - 88} width={176} height={176}>
-            <div className="flex h-full w-full flex-col items-center justify-center text-center">
-              <span className="font-display text-2xl font-extrabold tracking-tight text-white">DSIP</span>
-              <span className="mt-1 font-mono text-[9px] uppercase tracking-[0.1em] text-white/50">
+          <foreignObject x={CENTER - 64} y={CENTER - 64} width={128} height={128}>
+            <div className="flex h-full w-full flex-col items-center justify-center rounded-full border border-signal-blue/30 bg-[#050b18]/55 text-center backdrop-blur-[2px]">
+              <span className="font-display text-xl font-extrabold tracking-tight text-white">DSIP</span>
+              <span className="mt-1 font-mono text-[8.5px] uppercase tracking-[0.1em] text-white/55">
                 Insights Core
               </span>
             </div>
@@ -138,7 +140,7 @@ function IntelligenceEngine() {
                   onMouseEnter={() => setActive(s)}
                   onFocus={() => setActive(s)}
                   className={cn(
-                    "mx-auto flex w-fit flex-col items-center gap-1.5 rounded-xl border px-3 py-2 backdrop-blur-sm transition",
+                    "pointer-events-auto mx-auto flex w-fit flex-col items-center gap-1.5 rounded-xl border px-3 py-2 backdrop-blur-sm transition",
                     isActive
                       ? "border-signal-teal/50 bg-[#0a1428]/95 shadow-[0_0_24px_rgba(34,211,238,.25)]"
                       : "border-white/10 bg-[#0a1428]/85 hover:border-white/25",
@@ -197,8 +199,13 @@ function StatStrip() {
 
 export function Hero() {
   const { open: openDemo } = useDemoModal();
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end start"] });
+  const engineOpacity = useTransform(scrollYProgress, [0, 0.75, 1], [1, 1, 0.15]);
+  const engineScale = useTransform(scrollYProgress, [0, 0.75, 1], [1, 1, 0.92]);
+
   return (
-    <section id="hero" className="relative overflow-hidden px-5 pb-20 pt-40 text-center sm:pt-48">
+    <section ref={sectionRef} id="hero" className="relative overflow-hidden px-5 pb-20 pt-40 text-center sm:pt-48">
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(55%_40%_at_50%_8%,rgba(30,111,235,.18),transparent)]" />
 
       <motion.div
@@ -273,10 +280,11 @@ export function Hero() {
       </motion.div>
 
       <motion.div
-        initial={{ opacity: 0, y: 28 }}
-        whileInView={{ opacity: 1, y: 0 }}
+        initial={{ y: 28 }}
+        whileInView={{ y: 0 }}
         viewport={{ once: true, margin: "-100px" }}
         transition={{ duration: 0.8 }}
+        style={{ opacity: engineOpacity, scale: engineScale }}
         className="mt-16"
       >
         <IntelligenceEngine />
@@ -285,9 +293,8 @@ export function Hero() {
           <span className="text-signal-teal">Complete Visibility</span>
           <span>AI-Powered Intelligence</span>
         </div>
+        <StatStrip />
       </motion.div>
-
-      <StatStrip />
     </section>
   );
 }

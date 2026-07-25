@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { KeyRound, MessageCircle, ShoppingBag, StickyNote } from "lucide-react";
 import { SectionHeading } from "../primitives/kit";
 import { TerminalWindow } from "../primitives/terminal";
+import { TintWash } from "../primitives/section-backgrounds";
 import { cn } from "@/lib/utils";
 
 const feed = [
@@ -86,7 +87,8 @@ function LeakFeed() {
 
 export function DarkWeb() {
   return (
-    <section id="dark-web" className="mx-auto max-w-[1128px] px-5 py-24 sm:px-8">
+    <section id="dark-web" className="relative mx-auto max-w-[1128px] overflow-hidden px-5 py-24 sm:px-8">
+      <TintWash tint="rgba(226,58,78,.09)" position="50% 0%" />
       <SectionHeading
         index="05"
         align="center"

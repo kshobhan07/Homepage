@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import {
   Eye,
   FileText,
@@ -12,8 +13,9 @@ import {
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
-import { Panel, SectionHeading, Tag } from "../primitives/kit";
+import { Panel, PulseDot, SectionHeading, Tag } from "../primitives/kit";
 import { RadialGauge, StatCounter } from "../primitives/stat";
+import { HoloDashGlow } from "../primitives/section-backgrounds";
 import { cn } from "@/lib/utils";
 
 const nav = [
@@ -106,14 +108,21 @@ function PhishingPane() {
             </tr>
           </thead>
           <tbody className="divide-y divide-white/[.06]">
-            {phishingRows.map((r) => (
-              <tr key={r.domain}>
+            {phishingRows.map((r, i) => (
+              <motion.tr
+                key={r.domain}
+                initial={{ opacity: 0, x: -8 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.06 }}
+                className="transition-colors hover:bg-white/[.03]"
+              >
                 <td className="px-4 py-2.5 font-mono text-xs text-white/80">{r.domain}</td>
                 <td className="px-4 py-2.5 font-mono text-xs text-white/45">{r.date}</td>
                 <td className="px-4 py-2.5 font-mono text-xs text-white/45">{r.status}</td>
                 <td className="px-4 py-2.5 text-xs text-white/60">{r.state}</td>
                 <td className="px-4 py-2.5 text-xs text-white/60">{r.type}</td>
-              </tr>
+              </motion.tr>
             ))}
           </tbody>
         </table>
@@ -160,7 +169,8 @@ export function PlatformSnapshot() {
   const [tab, setTab] = useState<(typeof tabs)[number]["id"]>("overview");
 
   return (
-    <section id="platform-snapshot" className="mx-auto max-w-[1300px] px-5 py-24 sm:px-8">
+    <section id="platform-snapshot" className="relative mx-auto max-w-[1300px] overflow-hidden px-5 py-24 sm:px-8">
+      <HoloDashGlow />
       <SectionHeading
         index="09"
         align="center"
@@ -169,58 +179,79 @@ export function PlatformSnapshot() {
         title="This is the product, not a mockup"
         description="A live look at the console your team works in every day — self-scan, threat scoring, phishing evidence and Intellicore AI, in one place."
       />
-      <Panel className="mx-auto overflow-hidden !rounded-[20px] p-0">
-        <div className="flex items-center justify-between border-b border-white/[.07] bg-white/[.02] px-5 py-3">
-          <div className="flex items-center gap-1.5">
-            <span className="h-2.5 w-2.5 rounded-full bg-signal-red/70" />
-            <span className="h-2.5 w-2.5 rounded-full bg-signal-amber/70" />
-            <span className="h-2.5 w-2.5 rounded-full bg-signal-teal/70" />
-          </div>
-          <span className="font-mono text-[11px] text-white/40">app.dsip.kpmg.com / self-scan</span>
-          <Tag tone="teal">Live</Tag>
+      <div className="relative mx-auto max-w-[1100px]">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.4 }}
+          className="pointer-events-none absolute inset-0 translate-x-3 translate-y-4 rounded-[26px] border border-white/[.05] opacity-50 blur-[1px]"
+          aria-hidden
+        />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-80px" }}
+          transition={{ duration: 0.4, delay: 0.05 }}
+          className="pointer-events-none absolute inset-0 translate-x-6 translate-y-8 rounded-[26px] border border-white/[.03] opacity-30 blur-[2px]"
+          aria-hidden
+        />
+
+        <div className="mb-3 flex items-center justify-between px-1">
+          <span className="font-mono text-[10px] uppercase tracking-wide text-white/35">app.dsip.kpmg.com / self-scan</span>
+          <Tag tone="teal">
+            <PulseDot tone="teal" className="mr-1.5" /> Live
+          </Tag>
         </div>
-        <div className="grid md:grid-cols-[180px_1fr]">
-          <div className="hidden flex-col gap-1 border-r border-white/[.07] p-4 md:flex">
-            <span className="mb-3 flex items-center gap-2">
-              <span className="grid h-6 w-6 place-items-center rounded-[5px] bg-white text-[8px] font-black text-kpmg">KPMG</span>
-              <span className="font-mono text-[10px] uppercase tracking-wide text-white/40">DSIP</span>
-            </span>
-            {nav.map((n) => (
-              <div
-                key={n.label}
-                className={cn(
-                  "flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-xs",
-                  n.label === "Overview" ? "bg-signal-blue/10 text-white" : "text-white/45",
-                )}
-              >
-                <n.Icon className="h-3.5 w-3.5" />
-                {n.label}
-              </div>
-            ))}
-          </div>
-          <div>
-            <div className="flex gap-1 border-b border-white/[.07] px-4 pt-3">
-              {tabs.map((t) => (
+
+        <Panel className="overflow-hidden !rounded-[26px] p-0 shadow-[0_60px_140px_-40px_rgba(30,111,235,.35)]">
+          <div className="grid md:grid-cols-[68px_1fr]">
+            <div className="hidden flex-col items-center gap-3 border-r border-white/[.05] py-6 md:flex">
+              <span className="mb-2 grid h-8 w-8 place-items-center rounded-[7px] bg-white text-[8px] font-black text-kpmg">KPMG</span>
+              {nav.map((n) => (
                 <button
-                  key={t.id}
-                  onClick={() => setTab(t.id)}
+                  key={n.label}
+                  title={n.label}
                   className={cn(
-                    "rounded-t-lg px-3.5 py-2 font-mono text-[11px] uppercase tracking-wide transition",
-                    tab === t.id ? "bg-white/[.05] text-white" : "text-white/35 hover:text-white/60",
+                    "grid h-9 w-9 place-items-center rounded-full transition-colors",
+                    n.label === "Overview" ? "bg-signal-blue/15 text-signal-blue" : "text-white/30 hover:bg-white/[.05] hover:text-white/60",
                   )}
                 >
-                  {t.label}
+                  <n.Icon className="h-4 w-4" />
                 </button>
               ))}
             </div>
-            <div className="min-h-[360px]">
-              {tab === "overview" ? <OverviewPane /> : null}
-              {tab === "phishing" ? <PhishingPane /> : null}
-              {tab === "chat" ? <ChatPane /> : null}
+            <div>
+              <div className="flex gap-1 border-b border-white/[.05] px-5 pt-4">
+                {tabs.map((t) => (
+                  <button
+                    key={t.id}
+                    onClick={() => setTab(t.id)}
+                    className={cn(
+                      "relative rounded-t-lg px-3.5 py-2 font-mono text-[11px] uppercase tracking-wide transition-colors",
+                      tab === t.id ? "text-white" : "text-white/35 hover:text-white/60",
+                    )}
+                  >
+                    {t.label}
+                    {tab === t.id ? (
+                      <motion.span
+                        layoutId="snapshot-tab-underline"
+                        transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                        className="absolute inset-0 -z-10 rounded-t-lg bg-white/[.05]"
+                      />
+                    ) : null}
+                  </button>
+                ))}
+              </div>
+              <div className="min-h-[360px]">
+                {tab === "overview" ? <OverviewPane /> : null}
+                {tab === "phishing" ? <PhishingPane /> : null}
+                {tab === "chat" ? <ChatPane /> : null}
+              </div>
             </div>
           </div>
-        </div>
-      </Panel>
+        </Panel>
+      </div>
     </section>
   );
 }
