@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Check,
-  ChevronRight,
   Flag,
   ListChecks,
   Loader2,
@@ -283,34 +282,51 @@ export function Intellicore() {
         title="Watch an AI analyst investigate, in real time"
         description="Intellicore reasons across every signal DSIP collects — searching in plain language, tracing attack paths, summarizing exposure, triaging noise and recommending what to do next."
       />
-      <Panel className="mx-auto max-w-4xl overflow-hidden !rounded-[20px] p-0">
-        <div className="grid md:grid-cols-[.85fr_1.15fr]">
-          <div className="border-b border-white/[.07] p-3 md:border-b-0 md:border-r">
-            {steps.map((step, i) => (
-              <button
-                key={step.id}
-                onClick={() => setActive(step.id)}
+      <div className="relative mx-auto mb-14 flex max-w-3xl items-start justify-between">
+        <div className="absolute left-0 right-0 top-[15px] h-px bg-white/10" />
+        <motion.div
+          className="absolute top-[15px] h-px bg-gradient-to-r from-signal-indigo to-signal-teal"
+          initial={false}
+          animate={{
+            left: `${(steps.findIndex((s) => s.id === active) / (steps.length - 1)) * 6}%`,
+            width: `${(steps.findIndex((s) => s.id === active) / (steps.length - 1)) * 94 + 3}%`,
+          }}
+          transition={{ type: "spring", stiffness: 200, damping: 30 }}
+        />
+        {steps.map((step, i) => {
+          const isActive = active === step.id;
+          const isPast = i < steps.findIndex((s) => s.id === active);
+          return (
+            <button
+              key={step.id}
+              onClick={() => setActive(step.id)}
+              className="group relative z-10 flex flex-1 flex-col items-center gap-3 text-center"
+            >
+              <motion.span
+                animate={{ scale: isActive ? 1.3 : 1 }}
+                transition={{ type: "spring", stiffness: 350, damping: 20 }}
                 className={cn(
-                  "relative flex w-full items-center gap-3 rounded-[8px] px-3 py-3 text-left text-sm transition-colors",
-                  active === step.id ? "text-[#c7d8f7]" : "text-white/65 hover:bg-white/[.04]",
+                  "grid h-[30px] w-[30px] place-items-center rounded-full border-2 backdrop-blur-sm transition-colors",
+                  isActive
+                    ? "border-signal-indigo bg-signal-indigo/20 text-signal-indigo shadow-[0_0_24px_rgba(110,124,246,.5)]"
+                    : isPast
+                      ? "border-signal-teal/50 bg-signal-teal/10 text-signal-teal"
+                      : "border-white/15 bg-[#050b18] text-white/30 group-hover:border-white/30",
                 )}
               >
-                {active === step.id ? (
-                  <motion.span
-                    layoutId="intellicore-step-active"
-                    transition={{ type: "spring", stiffness: 400, damping: 32 }}
-                    className="absolute inset-0 -z-10 rounded-[8px] bg-signal-indigo/10"
-                  />
-                ) : null}
-                <span className="font-mono text-[10px] text-white/30">0{i + 1}</span>
-                <step.Icon className="h-3.5 w-3.5 shrink-0" />
-                <span className="flex-1">{step.label}</span>
-                <motion.span animate={{ x: active === step.id ? 2 : 0 }}>
-                  <ChevronRight className="h-4 w-4 text-white/25" />
-                </motion.span>
-              </button>
-            ))}
-          </div>
+                <step.Icon className="h-3.5 w-3.5" />
+              </motion.span>
+              <span className={cn("hidden max-w-[110px] font-mono text-[9.5px] uppercase leading-tight tracking-wide sm:block", isActive ? "text-white" : "text-white/35")}>
+                {step.label}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      <div className="relative mx-auto max-w-3xl">
+        <div className="pointer-events-none absolute -inset-x-6 -inset-y-6 rounded-[32px] bg-signal-indigo/[.04] blur-2xl" aria-hidden />
+        <Panel className="relative overflow-hidden !rounded-[24px] p-0">
           <div className="relative min-h-[380px] overflow-hidden">
             <AnimatePresence mode="wait">
               <motion.div
@@ -328,8 +344,8 @@ export function Intellicore() {
               </motion.div>
             </AnimatePresence>
           </div>
-        </div>
-      </Panel>
+        </Panel>
+      </div>
     </section>
   );
 }
