@@ -45,6 +45,11 @@ body {
   border-radius: 2px;
 }
 
+.dsip-cursor-none,
+.dsip-cursor-none * {
+  cursor: none !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -174,6 +179,26 @@ body {
   }
   100% {
     transform: scale(2.75);
+    opacity: 0;
+  }
+}
+
+.dsip-stream {
+  animation: dsip-stream-x linear infinite;
+}
+@keyframes dsip-stream-x {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(160%);
     opacity: 0;
   }
 }

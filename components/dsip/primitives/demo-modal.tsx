@@ -2,9 +2,9 @@
 
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Calendar, Check, ChevronDown, Loader2, Sparkles, X } from "lucide-react";
+import { Calendar, Check, Loader2, Sparkles, X } from "lucide-react";
 import { Button } from "./kit";
-import { cn } from "@/lib/utils";
+import { SelectField, TextField } from "./field";
 
 type ModalMode = "demo" | "consult";
 
@@ -45,37 +45,8 @@ const modeCopy: Record<ModalMode, { title: string; sub: string; cta: string }> =
   },
 };
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="block">
-      <span className="mb-1.5 block font-mono text-[10px] uppercase tracking-wide text-white/40">{label}</span>
-      {children}
-    </label>
-  );
-}
-
-const inputClass =
-  "h-11 w-full rounded-lg border border-white/12 bg-white/[.04] px-3.5 text-sm text-white placeholder:text-white/30 focus:border-signal-blue/50 focus:outline-none";
-
-function SelectField({ label, options, required = true }: { label: string; options: string[]; required?: boolean }) {
-  return (
-    <Field label={label}>
-      <div className="relative">
-        <select required={required} defaultValue="" className={cn(inputClass, "appearance-none pr-9 text-white/85")}>
-          <option value="" disabled>
-            Select&hellip;
-          </option>
-          {options.map((o) => (
-            <option key={o} value={o} className="bg-[#0a1428]">
-              {o}
-            </option>
-          ))}
-        </select>
-        <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-white/35" />
-      </div>
-    </Field>
-  );
-}
+const dateInputClass =
+  "h-11 w-full rounded-lg border border-white/12 bg-white/[.04] px-3.5 pr-9 text-sm text-white outline-none transition-colors focus:border-signal-teal/50 [color-scheme:dark]";
 
 function DemoForm({ mode, onSubmitted }: { mode: ModalMode; onSubmitted: () => void }) {
   const [submitting, setSubmitting] = useState(false);
@@ -101,22 +72,17 @@ function DemoForm({ mode, onSubmitted }: { mode: ModalMode; onSubmitted: () => v
 
       <div className="mt-6 grid gap-4 sm:grid-cols-2">
         <SelectField label="Industry" options={industries} />
-        <Field label="Organization">
-          <input required type="text" placeholder="Acme Corp" className={inputClass} />
-        </Field>
+        <TextField label="Organization" required type="text" placeholder="Acme Corp" />
         <SelectField label="Employees" options={employeeBands} />
-        <Field label="Work email">
-          <input required type="email" placeholder="you@company.com" className={inputClass} />
-        </Field>
-        <Field label="Phone">
-          <input type="tel" placeholder="+1 (555) 000-0000" className={inputClass} />
-        </Field>
-        <Field label="Preferred date">
+        <TextField label="Work email" required type="email" placeholder="you@company.com" />
+        <TextField label="Phone" type="tel" placeholder="+1 (555) 000-0000" />
+        <label className="block">
+          <span className="mb-1.5 block font-mono text-[10px] uppercase tracking-wide text-white/40">Preferred date</span>
           <div className="relative">
-            <input type="date" className={cn(inputClass, "pr-9 [color-scheme:dark]")} />
+            <input type="date" className={dateInputClass} />
             <Calendar className="pointer-events-none absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-white/35" />
           </div>
-        </Field>
+        </label>
         <div className="sm:col-span-2">
           <SelectField label="Primary use case" options={useCases} />
         </div>
@@ -205,13 +171,16 @@ export function DemoModalProvider({ children }: { children: React.ReactNode }) {
               onClick={(e) => e.stopPropagation()}
               className="dsip-panel relative w-full max-w-lg overflow-hidden !rounded-[20px]"
             >
-              <button
+              <motion.button
                 onClick={close}
                 aria-label="Close"
+                whileHover={{ rotate: 90, scale: 1.06 }}
+                whileTap={{ scale: 0.9 }}
+                transition={{ type: "spring", stiffness: 350, damping: 18 }}
                 className="absolute right-4 top-4 z-10 grid h-8 w-8 place-items-center rounded-full border border-white/10 bg-white/[.04] text-white/50 hover:text-white"
               >
                 <X className="h-4 w-4" />
-              </button>
+              </motion.button>
               {submitted ? <SuccessState mode={mode} onClose={close} /> : <DemoForm mode={mode} onSubmitted={() => setSubmitted(true)} />}
             </motion.div>
           </motion.div>

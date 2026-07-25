@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { Panel, SectionHeading, Tag } from "../primitives/kit";
 import { usePrefersReducedMotion } from "../primitives/hooks";
+import { TintWash } from "../primitives/section-backgrounds";
 import { cn } from "@/lib/utils";
 
 type Step = { text: string; who: "A" | "M" };
@@ -43,13 +45,15 @@ function ProcessFlow() {
             onClick={() => setActive(i)}
             className="relative z-10 flex flex-col items-center gap-2"
           >
-            <span
+            <motion.span
+              animate={{ scale: i === active ? 1.25 : 1 }}
+              transition={{ type: "spring", stiffness: 350, damping: 20 }}
               className={cn(
-                "grid h-4 w-4 place-items-center rounded-full border-2 transition-all",
-                i === active ? "border-signal-blue bg-signal-blue scale-125" : "border-white/25 bg-[#050b18]",
+                "grid h-4 w-4 place-items-center rounded-full border-2",
+                i === active ? "border-signal-blue bg-signal-blue" : "border-white/25 bg-[#050b18]",
               )}
             />
-            <span className={cn("font-mono text-[11px] uppercase tracking-wide", i === active ? "text-white" : "text-white/40")}>
+            <span className={cn("font-mono text-[11px] uppercase tracking-wide transition-colors", i === active ? "text-white" : "text-white/40")}>
               {phase.label}
             </span>
           </button>
@@ -58,9 +62,10 @@ function ProcessFlow() {
 
       <div className="grid gap-3 sm:grid-cols-5">
         {phases.map((phase, i) => (
-          <div
+          <motion.div
             key={phase.id}
             onMouseEnter={() => setActive(i)}
+            whileHover={{ y: -2 }}
             className={cn(
               "rounded-xl border p-4 transition-colors",
               i === active ? "border-signal-blue/40 bg-signal-blue/[.06]" : "border-white/10 bg-white/[.02]",
@@ -82,7 +87,7 @@ function ProcessFlow() {
                 </div>
               ))}
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
 
@@ -103,7 +108,8 @@ function ProcessFlow() {
 
 export function Architecture() {
   return (
-    <section id="architecture" className="mx-auto max-w-[1200px] px-5 py-24 sm:px-8">
+    <section id="architecture" className="relative mx-auto max-w-[1200px] overflow-hidden px-5 py-24 sm:px-8">
+      <TintWash tint="rgba(85,120,255,.09)" position="50% 0%" />
       <SectionHeading
         index="08"
         align="center"

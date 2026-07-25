@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Fingerprint, Globe2, Server, ShieldAlert } from "lucide-react";
 import { Panel, SectionHeading, Tag } from "../primitives/kit";
 import { StatCounter } from "../primitives/stat";
+import { TintWash } from "../primitives/section-backgrounds";
 import { cn } from "@/lib/utils";
 
 const stats = [
@@ -228,7 +229,8 @@ function DiscoveryTimeline() {
 
 export function AttackSurface() {
   return (
-    <section id="attack-surface" className="mx-auto max-w-[1400px] px-5 py-24 sm:px-8">
+    <section id="attack-surface" className="relative mx-auto max-w-[1400px] overflow-hidden px-5 py-24 sm:px-8">
+      <TintWash tint="rgba(30,111,235,.10)" position="15% 0%" />
       <SectionHeading
         index="02"
         kicker="Attack Surface & AI Asset Discovery"

@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { Panel, SectionHeading, Tag } from "../primitives/kit";
 import { GraphEdge, GraphNode, GraphSurface } from "../primitives/graph";
+import { NeuralField } from "../primitives/section-backgrounds";
 import { usePrefersReducedMotion } from "../primitives/hooks";
 import { cn } from "@/lib/utils";
 
@@ -272,7 +273,8 @@ export function Intellicore() {
   const [active, setActive] = useState<(typeof steps)[number]["id"]>("search");
 
   return (
-    <section id="intellicore" className="mx-auto max-w-[1200px] px-5 py-24 sm:px-8">
+    <section id="intellicore" className="relative mx-auto max-w-[1200px] overflow-hidden px-5 py-24 sm:px-8">
+      <NeuralField />
       <SectionHeading
         index="03"
         align="center"
@@ -289,23 +291,42 @@ export function Intellicore() {
                 key={step.id}
                 onClick={() => setActive(step.id)}
                 className={cn(
-                  "flex w-full items-center gap-3 rounded-[8px] px-3 py-3 text-left text-sm transition",
-                  active === step.id ? "bg-signal-indigo/10 text-[#c7d8f7]" : "text-white/65 hover:bg-white/[.04]",
+                  "relative flex w-full items-center gap-3 rounded-[8px] px-3 py-3 text-left text-sm transition-colors",
+                  active === step.id ? "text-[#c7d8f7]" : "text-white/65 hover:bg-white/[.04]",
                 )}
               >
+                {active === step.id ? (
+                  <motion.span
+                    layoutId="intellicore-step-active"
+                    transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                    className="absolute inset-0 -z-10 rounded-[8px] bg-signal-indigo/10"
+                  />
+                ) : null}
                 <span className="font-mono text-[10px] text-white/30">0{i + 1}</span>
                 <step.Icon className="h-3.5 w-3.5 shrink-0" />
                 <span className="flex-1">{step.label}</span>
-                <ChevronRight className="h-4 w-4 text-white/25" />
+                <motion.span animate={{ x: active === step.id ? 2 : 0 }}>
+                  <ChevronRight className="h-4 w-4 text-white/25" />
+                </motion.span>
               </button>
             ))}
           </div>
-          <div className="min-h-[380px]">
-            {active === "search" ? <NaturalLanguageSearch /> : null}
-            {active === "summary" ? <ThreatSummarization /> : null}
-            {active === "attackpath" ? <AttackPathAnalysis /> : null}
-            {active === "autoflag" ? <AutoFlagging /> : null}
-            {active === "recommend" ? <Recommendations /> : null}
+          <div className="relative min-h-[380px] overflow-hidden">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={active}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+              >
+                {active === "search" ? <NaturalLanguageSearch /> : null}
+                {active === "summary" ? <ThreatSummarization /> : null}
+                {active === "attackpath" ? <AttackPathAnalysis /> : null}
+                {active === "autoflag" ? <AutoFlagging /> : null}
+                {active === "recommend" ? <Recommendations /> : null}
+              </motion.div>
+            </AnimatePresence>
           </div>
         </div>
       </Panel>

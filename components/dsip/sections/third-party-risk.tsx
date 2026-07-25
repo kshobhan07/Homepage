@@ -6,6 +6,7 @@ import { Panel, SectionHeading, Tag } from "../primitives/kit";
 import { RadialGauge } from "../primitives/stat";
 import { GraphEdge, GraphNode, GraphSurface } from "../primitives/graph";
 import { usePrefersReducedMotion } from "../primitives/hooks";
+import { TintWash } from "../primitives/section-backgrounds";
 
 type Tier = 1 | 2;
 type RiskTier = "Critical" | "High" | "Medium" | "Low";
@@ -163,7 +164,8 @@ function VendorDetail({ vendor }: { vendor: Vendor }) {
 export function ThirdPartyRisk() {
   const [active, setActive] = useState<Vendor>(vendors[1]);
   return (
-    <section id="third-party" className="mx-auto max-w-[1400px] px-5 py-24 sm:px-8">
+    <section id="third-party" className="relative mx-auto max-w-[1400px] overflow-hidden px-5 py-24 sm:px-8">
+      <TintWash tint="rgba(30,111,235,.09)" position="20% 100%" />
       <SectionHeading
         index="07"
         kicker="Third-Party Risk Management"

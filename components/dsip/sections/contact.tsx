@@ -5,13 +5,14 @@ import { motion } from "framer-motion";
 import {
   Calendar,
   Check,
-  ChevronDown,
   Mail,
   MessageSquareText,
   Phone,
   Sparkles,
 } from "lucide-react";
 import { Button, Panel, PulseDot, SectionHeading, Tag } from "../primitives/kit";
+import { SelectField, TextAreaField, TextField } from "../primitives/field";
+import { GlobeAmbientField } from "../primitives/section-backgrounds";
 import { useDemoModal } from "../primitives/demo-modal";
 import { cn } from "@/lib/utils";
 
@@ -163,24 +164,12 @@ function ContactForm() {
             className="space-y-3.5"
           >
             <div className="grid gap-3.5 sm:grid-cols-2">
-              <input required placeholder="Full name" className="h-11 rounded-lg border border-white/12 bg-white/[.04] px-3.5 text-sm text-white placeholder:text-white/30 focus:border-signal-blue/50 focus:outline-none" />
-              <input required type="email" placeholder="Work email" className="h-11 rounded-lg border border-white/12 bg-white/[.04] px-3.5 text-sm text-white placeholder:text-white/30 focus:border-signal-blue/50 focus:outline-none" />
+              <TextField label="Full name" required placeholder="Jordan Smith" />
+              <TextField label="Work email" required type="email" placeholder="you@company.com" />
             </div>
-            <input placeholder="Organization" className="h-11 w-full rounded-lg border border-white/12 bg-white/[.04] px-3.5 text-sm text-white placeholder:text-white/30 focus:border-signal-blue/50 focus:outline-none" />
-            <div className="relative">
-              <select defaultValue="" required className="h-11 w-full appearance-none rounded-lg border border-white/12 bg-white/[.04] px-3.5 pr-9 text-sm text-white/85 focus:border-signal-blue/50 focus:outline-none">
-                <option value="" disabled>
-                  What can we help with?
-                </option>
-                {inquiryTypes.map((t) => (
-                  <option key={t} value={t} className="bg-[#0a1428]">
-                    {t}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-white/35" />
-            </div>
-            <textarea rows={3} placeholder="Tell us about your environment…" className="w-full resize-none rounded-lg border border-white/12 bg-white/[.04] px-3.5 py-2.5 text-sm text-white placeholder:text-white/30 focus:border-signal-blue/50 focus:outline-none" />
+            <TextField label="Organization" placeholder="Acme Corp" />
+            <SelectField label="What can we help with?" options={inquiryTypes} />
+            <TextAreaField label="Tell us more" rows={3} placeholder="Tell us about your environment…" />
             <Button type="submit" size="lg" className="w-full justify-center">
               Send message
             </Button>
@@ -195,7 +184,8 @@ export function Contact() {
   const { open } = useDemoModal();
 
   return (
-    <section id="contact" className="relative mx-auto max-w-[1400px] px-5 py-24 sm:px-8">
+    <section id="contact" className="relative mx-auto max-w-[1400px] overflow-hidden px-5 py-24 sm:px-8">
+      <GlobeAmbientField />
       <FloatingSupportCards />
       <SectionHeading
         index="10"

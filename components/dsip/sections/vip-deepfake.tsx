@@ -1,9 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { AudioLines, Film, ScanFace, UserRoundCheck } from "lucide-react";
 import { Panel, SectionHeading, Tag } from "../primitives/kit";
 import { RadialGauge } from "../primitives/stat";
+import { TintWash } from "../primitives/section-backgrounds";
 import { cn } from "@/lib/utils";
 
 const vipEvents = [
@@ -28,34 +30,47 @@ function ExposureTimeline() {
           const isActive = event.label === active.label;
           const pos = (vipEvents.indexOf(event) / (vipEvents.length - 1)) * 100;
           return (
-            <button
+            <motion.button
               key={event.label}
               onMouseEnter={() => setActive(event)}
               onFocus={() => setActive(event)}
+              whileHover={{ scale: 1.15 }}
               className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2"
               style={{ left: `${pos}%` }}
               aria-label={event.label}
             >
-              <span
-                className={cn("dsip-pulse block rounded-full border-2 transition-transform", isActive ? "h-4 w-4" : "h-3 w-3")}
+              <motion.span
+                animate={{ scale: isActive ? 1.15 : 1 }}
+                transition={{ type: "spring", stiffness: 350, damping: 20 }}
+                className={cn("dsip-pulse block rounded-full border-2", isActive ? "h-4 w-4" : "h-3 w-3")}
                 style={{ background: `${severityColor[event.severity]}30`, borderColor: severityColor[event.severity] }}
               />
               <span className="absolute left-1/2 top-5 -translate-x-1/2 whitespace-nowrap font-mono text-[10px] text-white/40">{event.day}</span>
-            </button>
+            </motion.button>
           );
         })}
       </div>
-      <div className="rounded-lg border border-white/10 bg-white/[.035] p-4">
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-semibold text-white/90">{active.label}</span>
-          <span
-            className="rounded-full border px-2.5 py-0.5 font-mono text-xs"
-            style={{ borderColor: `${severityColor[active.severity]}4d`, background: `${severityColor[active.severity]}1a`, color: severityColor[active.severity] }}
+      <div className="relative overflow-hidden rounded-lg border border-white/10 bg-white/[.035] p-4">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={active.label}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.2 }}
           >
-            {active.severity}
-          </span>
-        </div>
-        <p className="mt-1.5 text-xs text-white/50">{active.detail}</p>
+            <div className="flex items-center justify-between">
+              <span className="text-sm font-semibold text-white/90">{active.label}</span>
+              <span
+                className="rounded-full border px-2.5 py-0.5 font-mono text-xs"
+                style={{ borderColor: `${severityColor[active.severity]}4d`, background: `${severityColor[active.severity]}1a`, color: severityColor[active.severity] }}
+              >
+                {active.severity}
+              </span>
+            </div>
+            <p className="mt-1.5 text-xs text-white/50">{active.detail}</p>
+          </motion.div>
+        </AnimatePresence>
       </div>
     </Panel>
   );
@@ -139,7 +154,8 @@ function AuthenticityAnalyzer() {
 
 export function VipDeepfake() {
   return (
-    <section id="vip" className="mx-auto max-w-[1248px] px-5 py-24 sm:px-8">
+    <section id="vip" className="relative mx-auto max-w-[1248px] overflow-hidden px-5 py-24 sm:px-8">
+      <TintWash tint="rgba(242,169,59,.09)" position="85% 0%" />
       <SectionHeading
         index="06"
         kicker="VIP & Deepfake Monitoring"

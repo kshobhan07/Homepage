@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import {
   Eye,
   FileText,
@@ -14,6 +15,7 @@ import {
 } from "lucide-react";
 import { Panel, SectionHeading, Tag } from "../primitives/kit";
 import { RadialGauge, StatCounter } from "../primitives/stat";
+import { HoloDashGlow } from "../primitives/section-backgrounds";
 import { cn } from "@/lib/utils";
 
 const nav = [
@@ -106,14 +108,21 @@ function PhishingPane() {
             </tr>
           </thead>
           <tbody className="divide-y divide-white/[.06]">
-            {phishingRows.map((r) => (
-              <tr key={r.domain}>
+            {phishingRows.map((r, i) => (
+              <motion.tr
+                key={r.domain}
+                initial={{ opacity: 0, x: -8 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.06 }}
+                className="transition-colors hover:bg-white/[.03]"
+              >
                 <td className="px-4 py-2.5 font-mono text-xs text-white/80">{r.domain}</td>
                 <td className="px-4 py-2.5 font-mono text-xs text-white/45">{r.date}</td>
                 <td className="px-4 py-2.5 font-mono text-xs text-white/45">{r.status}</td>
                 <td className="px-4 py-2.5 text-xs text-white/60">{r.state}</td>
                 <td className="px-4 py-2.5 text-xs text-white/60">{r.type}</td>
-              </tr>
+              </motion.tr>
             ))}
           </tbody>
         </table>
@@ -160,7 +169,8 @@ export function PlatformSnapshot() {
   const [tab, setTab] = useState<(typeof tabs)[number]["id"]>("overview");
 
   return (
-    <section id="platform-snapshot" className="mx-auto max-w-[1300px] px-5 py-24 sm:px-8">
+    <section id="platform-snapshot" className="relative mx-auto max-w-[1300px] overflow-hidden px-5 py-24 sm:px-8">
+      <HoloDashGlow />
       <SectionHeading
         index="09"
         align="center"
@@ -205,11 +215,18 @@ export function PlatformSnapshot() {
                   key={t.id}
                   onClick={() => setTab(t.id)}
                   className={cn(
-                    "rounded-t-lg px-3.5 py-2 font-mono text-[11px] uppercase tracking-wide transition",
-                    tab === t.id ? "bg-white/[.05] text-white" : "text-white/35 hover:text-white/60",
+                    "relative rounded-t-lg px-3.5 py-2 font-mono text-[11px] uppercase tracking-wide transition-colors",
+                    tab === t.id ? "text-white" : "text-white/35 hover:text-white/60",
                   )}
                 >
                   {t.label}
+                  {tab === t.id ? (
+                    <motion.span
+                      layoutId="snapshot-tab-underline"
+                      transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                      className="absolute inset-0 -z-10 rounded-t-lg bg-white/[.05]"
+                    />
+                  ) : null}
                 </button>
               ))}
             </div>
