@@ -2,15 +2,17 @@
 
 import React, { useState } from "react";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { LogIn, Menu, X } from "lucide-react";
 import { Button } from "../primitives/kit";
 import { CommandPalette } from "../primitives/command-palette";
+import { useDemoModal } from "../primitives/demo-modal";
 import { SECTIONS } from "../sections-config";
 import { cn } from "@/lib/utils";
 
 export function Header() {
   const [solid, setSolid] = useState(false);
   const [open, setOpen] = useState(false);
+  const { open: openDemo } = useDemoModal();
   const { scrollY } = useScroll();
   useMotionValueEvent(scrollY, "change", (latest) => setSolid(latest > 16));
 
@@ -37,7 +39,13 @@ export function Header() {
 
         <div className="hidden items-center gap-3 lg:flex">
           <CommandPalette />
-          <Button size="default">Request access</Button>
+          <a
+            href="/login"
+            className="flex items-center gap-1.5 rounded-full border border-white/10 px-3.5 py-2 text-sm text-white/70 transition hover:border-white/25 hover:text-white"
+          >
+            <LogIn className="h-3.5 w-3.5" /> Login
+          </a>
+          <Button size="default" onClick={() => openDemo("demo")}>Request access</Button>
         </div>
 
         <button
@@ -71,8 +79,14 @@ export function Header() {
                 </a>
               ))}
             </div>
-            <div className="px-4 pb-4">
-              <Button className="w-full">Request access</Button>
+            <div className="flex gap-2 px-4 pb-4">
+              <a
+                href="/login"
+                className="flex flex-1 items-center justify-center gap-1.5 rounded-full border border-white/10 px-3.5 py-2.5 text-sm text-white/70"
+              >
+                <LogIn className="h-3.5 w-3.5" /> Login
+              </a>
+              <Button className="flex-1" onClick={() => openDemo("demo")}>Request access</Button>
             </div>
           </motion.div>
         ) : null}

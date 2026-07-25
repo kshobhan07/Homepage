@@ -16,6 +16,7 @@ import {
   EyeOff,
 } from "lucide-react";
 import { Button, Tag } from "../primitives/kit";
+import { useDemoModal } from "../primitives/demo-modal";
 import { StatCounter } from "../primitives/stat";
 import { usePrefersReducedMotion } from "../primitives/hooks";
 import { cn } from "@/lib/utils";
@@ -195,6 +196,7 @@ function StatStrip() {
 }
 
 export function Hero() {
+  const { open: openDemo } = useDemoModal();
   return (
     <section id="hero" className="relative overflow-hidden px-5 pb-20 pt-40 text-center sm:pt-48">
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(55%_40%_at_50%_8%,rgba(30,111,235,.18),transparent)]" />
@@ -261,10 +263,10 @@ export function Hero() {
         transition={{ duration: 0.7, delay: 0.32 }}
         className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row"
       >
-        <Button size="lg">
+        <Button size="lg" onClick={() => openDemo("demo")}>
           Request platform demo <ArrowRight className="h-4 w-4" />
         </Button>
-        <Button size="lg" variant="secondary">
+        <Button size="lg" variant="secondary" href="#platform-snapshot">
           <Play className="h-3.5 w-3.5" />
           See it in action
         </Button>

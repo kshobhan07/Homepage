@@ -63,16 +63,20 @@ export function PulseDot({ tone = "teal", className }: { tone?: "teal" | "red" |
   );
 }
 
+type ButtonOwnProps = {
+  variant?: "primary" | "secondary" | "ghost";
+  size?: "default" | "lg" | "icon";
+  href?: string;
+};
+
 export function Button({
   children,
   className,
   variant = "primary",
   size = "default",
+  href,
   ...props
-}: React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "primary" | "secondary" | "ghost";
-  size?: "default" | "lg" | "icon";
-}) {
+}: ButtonOwnProps & (React.ButtonHTMLAttributes<HTMLButtonElement> | React.AnchorHTMLAttributes<HTMLAnchorElement>)) {
   const variants: Record<string, string> = {
     primary:
       "bg-signal-blue text-white shadow-[0_0_0_1px_rgba(30,111,235,.4),0_20px_50px_-12px_rgba(30,111,235,.6)] hover:bg-[#3a83f0]",
@@ -84,16 +88,21 @@ export function Button({
     lg: "h-12 px-6 text-sm",
     icon: "h-10 w-10",
   };
+  const classes = cn(
+    "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-medium transition-all duration-200 active:scale-[.97] disabled:pointer-events-none disabled:opacity-50",
+    variants[variant],
+    sizes[size],
+    className,
+  );
+  if (href) {
+    return (
+      <a href={href} className={classes} {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}>
+        {children}
+      </a>
+    );
+  }
   return (
-    <button
-      className={cn(
-        "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full font-medium transition-all duration-200 active:scale-[.97] disabled:pointer-events-none disabled:opacity-50",
-        variants[variant],
-        sizes[size],
-        className,
-      )}
-      {...props}
-    >
+    <button className={classes} {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)}>
       {children}
     </button>
   );
