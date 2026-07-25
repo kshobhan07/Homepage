@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import dynamic from "next/dynamic";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   Calendar,
@@ -13,32 +14,26 @@ import {
 import { Button, Panel, PulseDot, SectionHeading, Tag } from "../primitives/kit";
 import { SelectField, TextAreaField, TextField } from "../primitives/field";
 import { useDemoModal } from "../primitives/demo-modal";
-import { cn } from "@/lib/utils";
+import { usePrefersReducedMotion } from "../primitives/hooks";
+import type { EarthOffice } from "../three/earth-scene";
 
-const CENTER_X = 300;
-const CENTER_Y = 188;
+const EarthScene = dynamic(() => import("../three/earth-scene"), { ssr: false });
 
-type Office = {
-  id: string;
-  city: string;
-  region: string;
-  x: number;
-  y: number;
-  status: "online" | "after-hours";
-  response: string;
-};
+type Office = EarthOffice & { region: string; response: string };
 
 const offices: Office[] = [
-  { id: "ny", city: "New York", region: "Americas", x: 110, y: 145, status: "online", response: "Responds in ~20 min" },
-  { id: "london", city: "London", region: "EMEA", x: 275, y: 100, status: "online", response: "Responds in ~15 min" },
-  { id: "dubai", city: "Dubai", region: "EMEA", x: 360, y: 160, status: "online", response: "Responds in ~30 min" },
-  { id: "mumbai", city: "Mumbai", region: "India", x: 415, y: 190, status: "online", response: "Responds in ~10 min" },
-  { id: "singapore", city: "Singapore", region: "APAC", x: 460, y: 235, status: "after-hours", response: "Next available 06:00 SGT" },
-  { id: "sydney", city: "Sydney", region: "APAC", x: 520, y: 300, status: "after-hours", response: "Next available 07:00 AEST" },
+  { id: "ny", city: "New York", region: "Americas", lat: 40.7, lon: -74.0, status: "online", response: "Responds in ~20 min" },
+  { id: "london", city: "London", region: "EMEA", lat: 51.5, lon: -0.1, status: "online", response: "Responds in ~15 min" },
+  { id: "dubai", city: "Dubai", region: "EMEA", lat: 25.2, lon: 55.3, status: "online", response: "Responds in ~30 min" },
+  { id: "mumbai", city: "Mumbai", region: "India", lat: 19.1, lon: 72.9, status: "online", response: "Responds in ~10 min" },
+  { id: "singapore", city: "Singapore", region: "APAC", lat: 1.35, lon: 103.8, status: "after-hours", response: "Next available 06:00 SGT" },
+  { id: "sydney", city: "Sydney", region: "APAC", lat: -33.9, lon: 151.2, status: "after-hours", response: "Next available 07:00 AEST" },
 ];
 
 function GlobalOpsGlobe() {
-  const [active, setActive] = useState<Office>(offices[3]);
+  const reduced = usePrefersReducedMotion();
+  const [activeId, setActiveId] = useState<string>("mumbai");
+  const active = offices.find((o) => o.id === activeId) ?? offices[3];
   const color = active.status === "online" ? "#22d3ee" : "#f2a93b";
 
   return (
@@ -51,44 +46,13 @@ function GlobalOpsGlobe() {
       </div>
 
       <div className="relative aspect-[16/10] w-full">
-        <svg viewBox="0 0 600 375" className="absolute inset-0 h-full w-full overflow-visible">
-          <defs>
-            <radialGradient id="contactGlow" cx="50%" cy="45%" r="65%">
-              <stop offset="0%" stopColor="rgba(30,111,235,.2)" />
-              <stop offset="100%" stopColor="transparent" />
-            </radialGradient>
-          </defs>
-          <rect width="600" height="375" fill="url(#contactGlow)" />
-          {[40, 70, 100, 130].map((ry) => (
-            <ellipse key={ry} cx={CENTER_X} cy={CENTER_Y} rx={280} ry={ry} fill="none" stroke="rgba(255,255,255,.06)" strokeWidth="0.6" />
-          ))}
-          {[280, 200, 120, 40].map((rx) => (
-            <ellipse key={rx} cx={CENTER_X} cy={CENTER_Y} rx={rx} ry={112} fill="none" stroke="rgba(255,255,255,.06)" strokeWidth="0.6" />
-          ))}
-          <circle cx={CENTER_X} cy={CENTER_Y} r={280} fill="none" stroke="rgba(255,255,255,.1)" strokeWidth="1" />
-
-          {offices.map((o) => {
-            const isActive = o.id === active.id;
-            const c = o.status === "online" ? "#22d3ee" : "#f2a93b";
-            return (
-              <g key={o.id} onMouseEnter={() => setActive(o)} className="cursor-pointer">
-                <line x1={CENTER_X} y1={CENTER_Y} x2={o.x} y2={o.y} stroke={isActive ? c : "rgba(255,255,255,.1)"} strokeWidth={isActive ? 1.2 : 0.6} />
-                <circle cx={o.x} cy={o.y} r={isActive ? 15 : 9} fill={`${c}18`} className={isActive ? "dsip-sonar-ring" : undefined} />
-                <circle cx={o.x} cy={o.y} r={isActive ? 5 : 3.5} fill={c} className={o.status === "online" ? "dsip-pulse" : undefined} />
-                <foreignObject x={o.x - 60} y={o.y + (o.y > CENTER_Y ? 10 : -26)} width={120} height={18} style={{ overflow: "visible" }}>
-                  <p
-                    className={cn(
-                      "text-center font-mono text-[9px] uppercase tracking-wide transition-opacity",
-                      isActive ? "opacity-100 text-white" : "opacity-45 text-white/70",
-                    )}
-                  >
-                    {o.city}
-                  </p>
-                </foreignObject>
-              </g>
-            );
-          })}
-        </svg>
+        {!reduced ? (
+          <EarthScene offices={offices} activeId={activeId} onHover={setActiveId} onLeave={() => {}} />
+        ) : (
+          <div className="flex h-full items-center justify-center">
+            <div className="h-40 w-40 rounded-full border border-signal-blue/30 bg-signal-blue/10" />
+          </div>
+        )}
 
         <div className="pointer-events-none absolute left-0 top-2 sm:top-0">
           <AnimatePresence mode="wait">
